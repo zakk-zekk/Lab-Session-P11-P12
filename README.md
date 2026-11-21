@@ -25,9 +25,10 @@ Aplikasi kasir sederhana berbasis Java Swing untuk **Praktikum Pemrograman Beror
 8. [Konsep PBO yang Diterapkan](#8-konsep-pbo-yang-diterapkan)
 9. [Data Uji dan Hasil yang Diharapkan](#9-data-uji-dan-hasil-yang-diharapkan)
 10. [Skenario Pengujian](#10-skenario-pengujian)
-11. [Batasan dan Catatan Penting](#11-batasan-dan-catatan-penting)
-12. [Pemecahan Masalah](#12-pemecahan-masalah)
-13. [Pengembangan Lanjutan](#13-pengembangan-lanjutan)
+11. [Panduan Screenshot untuk Laporan](#11-panduan-screenshot-untuk-laporan)
+12. [Batasan dan Catatan Penting](#12-batasan-dan-catatan-penting)
+13. [Pemecahan Masalah](#13-pemecahan-masalah)
+14. [Pengembangan Lanjutan](#14-pengembangan-lanjutan)
 
 ---
 
@@ -68,6 +69,7 @@ javac -version
 KasirKantinUNS/
 ├── README.md
 ├── Template_Laporan.md
+├── images/                   # screenshot hasil pengujian untuk laporan
 ├── out/                      # hasil kompilasi (dibuat saat javac dijalankan)
 └── src/
     └── lab/
@@ -362,7 +364,66 @@ Tanpa `join()`, `main` dapat mencetak `Semua pelanggan selesai dilayani` **sebel
 | 50.000 (misalnya harga 50000, jumlah 1) | 50.000 (tanpa diskon) |
 | 50.001 | Diskon 10% diterapkan |
 
-## 11. Batasan dan Catatan Penting
+## 11. Panduan Screenshot untuk Laporan
+
+Gunakan `Template_Laporan.md` sebagai kerangka laporan. Berikut sembilan screenshot hasil pengujian yang sudah diambil (file ada di folder `images/`).
+
+### Tahap 1: Output pengujian `Pesanan`
+
+![Output pengujian Pesanan](images/01-tahap1-output-pesanan.png)
+
+*Gambar 1. Setelah 2 menu: subtotal 45000.0 dan total 45000.0 (tanpa diskon). Setelah 3 menu: subtotal 70000.0 dan total 63000.0 (diskon 10%). Setelah `reset()`: subtotal 0.0.*
+
+### Tahap 2: Dua kasir sebagai thread
+
+![MainKasir eksekusi pertama](images/02-tahap2-eksekusi-1.png)
+
+*Gambar 2. Eksekusi pertama `MainKasir`: pada tiap pelanggan, Eko tampil lebih dulu daripada Dina.*
+
+![MainKasir eksekusi kedua](images/03-tahap2-eksekusi-2.png)
+
+*Gambar 3. Eksekusi kedua `MainKasir`: urutan berubah, Dina tampil lebih dulu pada pelanggan ke-1 dan ke-3.*
+
+| Pengamatan | Eksekusi 1 | Eksekusi 2 |
+|---|---|---|
+| Urutan output Dina dan Eko | Eko lebih dulu pada pelanggan ke-1 dan ke-3 | Dina lebih dulu pada pelanggan ke-1 dan ke-3 |
+| Pesan selesai tampil paling akhir? | Ya | Ya |
+
+Urutan output tidak dijamin sama karena penjadwalan thread, sedangkan `Semua pelanggan selesai dilayani` selalu paling akhir berkat `join()`.
+
+### Tahap 3: GUI dan validasi input
+
+![GUI setelah tiga menu ditambahkan](images/04-tahap3-gui-total.png)
+
+*Gambar 4. Setelah Nasi Goreng, Es Teh, dan Ayam Bakar ditambahkan lalu Hitung Total ditekan, label menampilkan `Total Bayar : Rp 63.000`.*
+
+![Validasi field kosong](images/05-tahap3-validasi-field-kosong.png)
+
+*Gambar 5. Field kosong: muncul dialog `Semua field harus diisi!`.*
+
+![Validasi harga bukan angka](images/06-tahap3-validasi-harga-abc.png)
+
+*Gambar 6. Harga `abc`: muncul dialog `Harga dan jumlah harus berupa angka!`.*
+
+![Validasi jumlah desimal](images/07-tahap3-validasi-jumlah-desimal.png)
+
+*Gambar 7. Jumlah `1.5` (harga `12000`): muncul dialog yang sama, sehingga bilangan desimal pada jumlah ditolak.*
+
+Pada ketiga kasus validasi, area struk tetap berisi tiga item semula dan `Total Bayar` tetap Rp 63.000, artinya data yang salah tidak masuk ke pesanan.
+
+### Tahap 4: Cetak struk dengan thread
+
+![Status mencetak struk](images/08-tahap4-status-mencetak.png)
+
+*Gambar 8. Setelah Cetak Struk ditekan, status menjadi `Status : Mencetak struk...`.*
+
+![Status struk selesai](images/09-tahap4-status-selesai.png)
+
+*Gambar 9. Setelah 2 detik, status berubah menjadi `Status : Struk selesai`.*
+
+> Kesimpulan laporan ditulis berdasarkan hasil eksekusi dan screenshot di atas.
+
+## 12. Batasan dan Catatan Penting
 
 Poin berikut adalah perilaku program saat ini, berguna untuk dipahami saat pengujian dan pembahasan di laporan:
 
@@ -377,7 +438,7 @@ Poin berikut adalah perilaku program saat ini, berguna untuk dipahami saat pengu
 9. **Tipe `double` untuk uang:** cukup untuk tugas ini, tetapi aplikasi nyata sebaiknya memakai `BigDecimal` atau satuan bilangan bulat (rupiah).
 10. **Urutan output Tahap 2 tidak deterministik** karena penjadwalan thread oleh sistem operasi dan JVM.
 
-## 12. Pemecahan Masalah
+## 13. Pemecahan Masalah
 
 | Gejala | Penyebab umum | Solusi |
 |---|---|---|
@@ -390,7 +451,7 @@ Poin berikut adalah perilaku program saat ini, berguna untuk dipahami saat pengu
 | Jendela GUI tidak muncul | Exception di konstruktor atau main class salah | Periksa pesan error di konsol, jalankan `lab.kasir.MainGUI` |
 | Output Dina/Eko selalu tampak sama urutannya | Kebetulan penjadwalan | Jalankan beberapa kali, urutan dapat berubah |
 
-## 13. Pengembangan Lanjutan
+## 14. Pengembangan Lanjutan
 
 Ide peningkatan bila project ingin dikembangkan:
 
